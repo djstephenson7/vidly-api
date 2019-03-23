@@ -1,13 +1,10 @@
-const Joi = require('joi');
-const mongoose = require('mongoose');
 const express = require('express');
 const { Customer, validate } = require('../models/customerModel');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const customers = await Customer.find().sort('name');
-  res.send(customers);
+  res.send(await Customer.find().sort('name'));
 });
 
 router.post('/', async (req, res) => {
