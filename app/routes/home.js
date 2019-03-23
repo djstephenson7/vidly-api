@@ -7,3 +7,5 @@ router.get('/', (req, res) => {
     message: 'Welcome to my express app.'
   });
 });
+
+module.exports = router;
