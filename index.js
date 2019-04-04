@@ -3,6 +3,7 @@ const express = require('express');
 const genres = require('./app/routes/genres');
 const customers = require('./app/routes/customers');
 const movies = require('./app/routes/movies');
+const rentals = require('./app/routes/rentals');
 // const home = require('./app/routes/home');
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
 app.use('/api/movies', movies);
+app.use('/api/rentals', rentals)
 // app.use('/', home)
 
 const port = process.env.PORT || 3000;
