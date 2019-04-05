@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "bcrypt": "^3.0.5",
     "express": "^4.16.4",
     "fawn": "^2.1.5",
     "joi": "^14.3.1",
     "joi-objectid": "^2.0.0",
-    "joi-password-complexity": "^2.0.1",
     "lodash": "^4.17.11",
     "mongoose": "^5.4.19"
   },
