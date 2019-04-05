@@ -8,7 +8,7 @@ const rentals = require('./app/routes/rentals');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost/genres', { useNewUrlParser: true })
+mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
   .then(() => console.log('Connecting to MongoDB...'))
   .catch(() => console.log('Could not connect to MongoDB!'));
 
