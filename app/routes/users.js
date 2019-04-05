@@ -4,7 +4,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { User, validate } = require('../models/userModel');
 
-
 const router = express();
 
 router.use(express.json());

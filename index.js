@@ -7,7 +7,7 @@ const customers = require('./app/routes/customers');
 const movies = require('./app/routes/movies');
 const rentals = require('./app/routes/rentals');
 const users = require('./app/routes/users');
-// const home = require('./app/routes/home');
+const auth = require('./app/routes/auth');
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use('/api/customers', customers);
 app.use('/api/movies', movies);
 app.use('/api/rentals', rentals)
 app.use('/api/users', users)
-// app.use('/', home)
+app.use('/api/auth', auth)
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
