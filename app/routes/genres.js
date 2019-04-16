@@ -7,8 +7,12 @@ const router = express();
 
 router.use(express.json());
 
-router.get('/', async (req, res) => {
-  res.send(await Genre.find().sort('genre'));
+router.get('/', async (req, res, next) => {
+  try {
+    res.send(await Genre.find().sort('genre'));
+  } catch (e) {
+    next(e);
+  }
 });
 
 router.post('/', auth, async (req, res) => {
