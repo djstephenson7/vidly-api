@@ -6,17 +6,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { User, validate } = require('../models/userModel');
 const auth = require('../middleware/auth');
+const asyncMiddleware = require('../middleware/async');
 
 const router = express();
 
 router.use(express.json());
 
-router.get('/me', auth, async (req, res) => {
+router.get('/me', auth, asyncMiddleware(async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
   res.send(user);
-});
+}));
 
-router.post('/', async (req, res) => {
+router.post('/', asyncMiddleware(async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -30,6 +31,6 @@ router.post('/', async (req, res) => {
 
   const token = user.generateAuthToken();
   res.header('x-auth-token', token).send(_.pick(user, ['name', 'email']));
-});
+}));
 
 module.exports = router;
