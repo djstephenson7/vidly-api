@@ -13,7 +13,9 @@
     "joi-objectid": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",
-    "mongoose": "^5.4.19"
+    "mongoose": "^5.4.19",
+    "winston": "^3.2.1",
+    "winston-mongodb": "^5.0.0"
   },
   "devDependencies": {
     "body-parser": "^1.18.3",
