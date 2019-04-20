@@ -16,11 +16,20 @@ const error = require('./app/middleware/error');
 
 const app = express();
 
+winston.handleExceptions(new winston.transports.File({ filename: 'uncaughtExceptions.log'}));
+
+process.on('unhandledRejection', (ex) => {
+  throw ex;
+});
+
 winston.add(winston.transports.File, { filename: 'logfile.log' });
 winston.add(winston.transports.MongoDB, {
   db: 'mongodb://localhost/vidly',
-  level: 'error',
+  level: 'info',
 });
+
+const p = Promise.reject(new Error('Something failed miserably.'));
+p.then(() => console.log('Done.'));
 
 if (!config.get('jwtPrivateKey')) {
   console.error('FATAL: jwtPrivateKey is not defined');
