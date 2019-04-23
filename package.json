@@ -35,7 +35,7 @@
     "supertest": "^4.0.2"
   },
   "scripts": {
-    "test": "jest --watchAll --verbose"
+    "test": "jest --watchAll --verbose --coverage --runInBand"
   },
   "keywords": [],
   "author": "Daniel Stephenson",
