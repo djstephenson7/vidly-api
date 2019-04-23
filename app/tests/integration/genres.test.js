@@ -35,12 +35,9 @@ describe('GET/:id', () => {
     expect(res.body).toHaveProperty('genre', genre.genre);
   });
 
-  // it('Should throw a 404 error if no genre found', async () => {
-  //   await Genre.collection.insertMany([
-  //     { _id: 1, name: 'Genre1' }
-  //   ]);
-  //   const res = await request(server).get('/api/genres/2');
-  //
-  //   expect(res.status).toBe(404);
-  // });
+  it('Should return 404 if invalid id is passed', async () => {
+    const res = await request(server).get('/api/genres/1');
+
+    expect(res.status).toBe(404);
+  });
 });
