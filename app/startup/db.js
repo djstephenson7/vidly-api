@@ -1,7 +1,9 @@
 const winston = require('winston');
+const config = require('config');
 
 module.exports = function (mongoose) {
-  mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
-    .then(() => console.log('Connecting to MongoDB...'))
-    .catch(() => console.log('Could not connect to MongoDB!'));
+  const db = config.get('db');
+  mongoose.connect(db, { useNewUrlParser: true })
+    .then(() => console.log(`Connecting to ${db}...`))
+    .catch(() => console.log(`Could not connect to ${db}!`));
 };
