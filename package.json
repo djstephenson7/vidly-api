@@ -27,14 +27,15 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
+    "jest": "^24.7.1",
     "morgan": "^1.9.1",
     "nodemon": "^1.18.11",
     "sinon": "^7.3.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watchAll"
   },
   "keywords": [],
-  "author": "",
+  "author": "Daniel Stephenson",
   "license": "ISC"
 }
