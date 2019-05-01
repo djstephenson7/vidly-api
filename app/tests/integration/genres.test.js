@@ -16,14 +16,14 @@ describe('/api/genres', () => {
   describe('GET /', () => {
     it('Should return all genres', async () => {
       await Genre.collection.insertMany([
-        { name: 'Genre1' },
-        { name: 'Genre2' },
-        { name: 'Genre3' },
+        { genre: 'Genre1' },
+        { genre: 'Genre2' },
+        { genre: 'Genre3' },
       ]);
       const res = await request(server).get('/api/genres');
       expect(res.status).toBe(200);
-      expect(res.body.some(g => g.name === 'Genre1')).toBeTruthy();
-      expect(res.body.some(g => g.name === 'Genre2')).toBeTruthy();
+      expect(res.body.some(g => g.genre === 'Genre1')).toBeTruthy();
+      expect(res.body.some(g => g.genre === 'Genre2')).toBeTruthy();
     });
   });
 });
@@ -103,59 +103,74 @@ describe('POST/', () => {
   });
 });
 
-describe('PUT/:id', () => {
+describe('PUT /:id', () => {
   let token;
+  let newName;
   let genre;
-  let updatedGenre;
   let id;
 
   const exec = async () => await request(server)
     .put(`/api/genres/${id}`)
     .set('x-auth-token', token)
-    .send({ genre: updatedGenre });
+    .send({ genre: newName });
 
   beforeEach(async () => {
-    genre = new Genre({ genre: 'Genre1' });
+    // Before each test we need to create a genre and
+    // put it in the database.
+    genre = new Genre({ genre: 'genre1' });
     await genre.save();
 
     token = new User().generateAuthToken();
     id = genre._id;
-    newGenreName = 'UpdatedGenre';
+    newName = 'updatedName';
   });
 
-  it('Should return 404 if the client is not logged in', async () => {
+  it('should return 401 if client is not logged in', async () => {
     token = '';
     const res = await exec();
 
     expect(res.status).toBe(401);
   });
 
-  it('Should return 400 if the request is fewer than 5 characters', async () => {
+  it('should return 400 if genre is less than 5 characters', async () => {
+    newName = '1234';
     const res = await exec();
-    newGenreName = '1234';
 
     expect(res.status).toBe(400);
   });
 
-  it('Should return 400 if the request is more than 50 characters', async () => {
+  it('should return 400 if genre is more than 50 characters', async () => {
+    newName = new Array(52).join('a');
     const res = await exec();
-    newGenreName = new Array(52).join('a');
 
     expect(res.status).toBe(400);
   });
 
-  it('Should save the genre if valid', async () => {
+  it('should return 404 if id is invalid', async () => {
+    id = 1;
+    const res = await exec();
+
+    expect(res.status).toBe(404);
+  });
+
+  it('should return 404 if genre with the given id was not found', async () => {
+    id = mongoose.Types.ObjectId();
+    const res = await exec();
+
+    expect(res.status).toBe(404);
+  });
+
+  it('should update the genre if input is valid', async () => {
     await exec();
-    const updatedGenre = await Genre.findById(genre._id, newGenreName);
+    const updatedGenre = await Genre.findById(genre._id);
 
-    expect(genre.genre).toBe(newGenreName);
+    expect(updatedGenre.genre).toBe(newName);
   });
 
-  xit('Should return the genre if valid', async () => {
+  it('should return the updated genre if it is valid', async () => {
     const res = await exec();
-    const genre = await Genre.find({ genre: 'Genre1' });
 
     expect(res.body).toHaveProperty('_id');
-    expect(res.body).toHaveProperty('genre', 'Genre1');
+    expect(res.body).toHaveProperty('genre', newName);
   });
 });
