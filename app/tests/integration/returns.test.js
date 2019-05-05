@@ -1,4 +1,4 @@
-
+const request = require('supertest');
 const { Rental } = require('../../models/rentalModel');
 const mongoose = require('mongoose');
 
@@ -33,9 +33,11 @@ describe('/api/returns', () => {
     await Rental.remove({});
   });
 
-  it('Should not break the test', async () => {
-    const result = await Rental.findById(rental._id);
+  it('Should return 401 if client is not logged in', async () => {
+    const res = await request(server)
+      .post('/api/returns')
+      .send({ customerId, movieId });
 
-    expect(result).not.toBeNull();
+    expect(res.status).toBe(401);
   });
 });
