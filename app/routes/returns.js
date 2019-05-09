@@ -1,9 +1,8 @@
 const express = require('express');
-const Joi = require('joi');
 const auth = require('../middleware/auth');
 const validate = require('../middleware/validate');
-const { Rental } = require('../models/rentalModel');
 const { Movie } = require('../models/movieModel');
+const { Rental, validateReturn } = require('../models/rentalModel');
 
 const router = express.Router();
 
@@ -24,15 +23,5 @@ router.post('/', [auth, validate(validateReturn)], async (req, res) => {
 
   return res.send(rental);
 });
-
-function validateReturn(req) {
-  const schema = {
-    customerId: Joi.objectId().required(),
-    movieId: Joi.objectId().required(),
-  };
-
-  return Joi.validate(req, schema);
-}
-
 
 module.exports = router;
