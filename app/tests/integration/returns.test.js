@@ -1,12 +1,19 @@
 const request = require('supertest');
-const { Rental } = require('../../models/rentalModel');
 const mongoose = require('mongoose');
+const { Rental } = require('../../models/rentalModel');
+const { User } = require('../../models/userModel');
 
 describe('/api/returns', () => {
   let server;
   let customerId;
   let movieId;
   let rental;
+  let token;
+
+  const exec = async () => request(server)
+    .post('/api/returns/')
+    .set('x-auth-token', token)
+    .send({ customerId, movieId });
 
   beforeEach(async () => {
     server = require('../../../index');
@@ -26,6 +33,7 @@ describe('/api/returns', () => {
     });
 
     await rental.save();
+    token = new User().generateAuthToken();
   });
 
   afterEach(async () => {
@@ -34,10 +42,23 @@ describe('/api/returns', () => {
   });
 
   it('Should return 401 if client is not logged in', async () => {
-    const res = await request(server)
-      .post('/api/returns')
-      .send({ customerId, movieId });
+    token = '';
+    const res = await exec();
 
     expect(res.status).toBe(401);
+  });
+
+  it('Should return 400 if customerId is not provided', async () => {
+    customerId = '';
+    const res = await exec();
+
+    expect(res.status).toBe(400);
+  });
+
+  it('Should return 400 if movieId is not provided', async () => {
+    movieId = '';
+    const res = await exec();
+
+    expect(res.status).toBe(400);
   });
 });
