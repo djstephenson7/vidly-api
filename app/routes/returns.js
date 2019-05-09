@@ -11,10 +11,7 @@ const router = express.Router();
 router.use(express.json());
 
 router.post('/', [auth, validate(validateReturn)], async (req, res) => {
-  const rental = await Rental.findOne({
-    'customer._id': req.body.customerId,
-    'movie._id': req.body.movieId,
-  });
+  const rental = await Rental.lookup(req.body.customerId, req.body.movieId);
 
   if (!rental) return res.status(404).send('No rental found.');
   if (rental.dateReturned) return res.status(400).send('Rental already processed.');
