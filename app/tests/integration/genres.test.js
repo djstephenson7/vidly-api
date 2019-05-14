@@ -115,8 +115,6 @@ describe('PUT /:id', () => {
     .send({ genre: newName });
 
   beforeEach(async () => {
-    // Before each test we need to create a genre and
-    // put it in the database.
     genre = new Genre({ genre: 'genre1' });
     await genre.save();
 

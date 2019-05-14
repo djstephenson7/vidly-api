@@ -1,6 +1,3 @@
-// PUT /:id happy path
-// 9. PUT /:id return 400 if (see 5-8)
-// 10. PUT /:id return 404 if customer with the given ID not found.
 // DELETE /:id happy path
 // 11. DELETE /:id return 404 if customer with the given ID not found.
 // 12. DELETE /:id Deletes customer successfully if ID valid
@@ -34,7 +31,7 @@ describe('/api/customers', () => {
     });
   });
 
-  describe('GET/:id', () => {
+  describe('GET /:id', () => {
     it('Should return a customer if the ID is valid', async () => {
       const customer = new Customer({ name: 'Customer1', phone: '12345' });
       await customer.save();
@@ -59,7 +56,7 @@ describe('/api/customers', () => {
     });
   });
 
-  describe('POST/', () => {
+  describe('POST /', () => {
     let name;
     let phone;
     let token;
@@ -126,6 +123,77 @@ describe('/api/customers', () => {
       const res = await exec();
 
       expect(res.status).toBe(400);
+    });
+  });
+
+  describe('PUT /:id', () => {
+    let customer;
+    let updatedName;
+    let updatedPhone;
+    let id;
+
+    const exec = async () => await request(server)
+      .put(`/api/customers/${id}`)
+      .send({ name: updatedName, phone: updatedPhone });
+
+    beforeEach(async () => {
+      customer = new Customer({ name: 'Customer1', phone: '12345' });
+      await customer.save();
+      id = customer._id;
+      updatedName = 'updatedName';
+      updatedPhone = '123456789';
+    });
+
+    it('Should update customer params successfully if ID is valid', async () => {
+      const res = await exec();
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('_id');
+      expect(res.body).toHaveProperty('name');
+      expect(res.body).toHaveProperty('phone');
+    });
+
+    it('Should return the updated customer if params are valid', async () => {
+      await exec();
+      const updatedCustomer = await Customer.findById(customer._id);
+
+      expect(updatedCustomer.name).toBe(updatedName);
+      expect(updatedCustomer.phone).toBe(updatedPhone);
+    });
+
+    it('Should return 400 if customer name is less than 5 characters', async () => {
+      updatedName = '1234';
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('Should return 400 if customer phone is less than 5 characters', async () => {
+      updatedPhone = '1234';
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('Should return 400 if customer name is more than 255 characters', async () => {
+      updatedName = new Array(257).join('a');
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('Should return 400 if customer phone is more than 50 characters', async () => {
+      updatedPhone = new Array(52).join('0');
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('Should return 404 if customer with valid ID does not exist', async () => {
+      id = mongoose.Types.ObjectId;
+      const res = await exec();
+
+      expect(res.status).toBe(404);
     });
   });
 });
