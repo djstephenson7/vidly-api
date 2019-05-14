@@ -1,11 +1,20 @@
 const express = require('express');
 const { Customer, validate } = require('../models/customerModel');
 const auth = require('../middleware/auth');
+const validateObjectId = require('../middleware/validateObjectId');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   res.send(await Customer.find().sort('name'));
+});
+
+router.get('/:id', validateObjectId, async (req, res) => {
+  const customer = await Customer.findById(req.params.id);
+
+  if (!customer) return res.status(404).send('The customer with the given ID was not found.');
+
+  res.send(customer);
 });
 
 router.post('/', auth, async (req, res) => {
@@ -41,14 +50,6 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   const customer = await Customer.findByIdAndRemove(req.params.id);
-
-  if (!customer) return res.status(404).send('The customer with the given ID was not found.');
-
-  res.send(customer);
-});
-
-router.get('/:id', async (req, res) => {
-  const customer = await Customer.findById(req.params.id);
 
   if (!customer) return res.status(404).send('The customer with the given ID was not found.');
 

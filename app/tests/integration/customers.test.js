@@ -1,7 +1,3 @@
-// 1. GET all happy path
-// 2. GET /:id happy path
-// 3. GET/:id 404 if invalid id is passed
-// 4. GET /:id 404 if customer id invalid
 // POST happy path
 // 5. POST return 401 if customer less than 5 characters
 // 6. POST return 401 if customer more than 255 characters
@@ -14,6 +10,7 @@
 // 11. DELETE /:id return 404 if customer with the given ID not found.
 // 12. DELETE /:id Deletes customer successfully if ID valid
 const request = require('supertest');
+const mongoose = require('mongoose');
 const { Customer, validate } = require('../../models/customerModel');
 
 let server;
@@ -42,7 +39,26 @@ describe('/api/customers', () => {
 
   describe('GET/:id', () => {
     it('Should return a customer if the ID is valid', async () => {
+      const customer = new Customer({ name: 'Customer1', phone: '12345' });
+      await customer.save();
+      const res = await request(server).get(`/api/customers/${customer._id}`);
 
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('name', customer.name);
+      expect(res.body).toHaveProperty('phone', customer.phone);
+    });
+
+    it('Should return 404 if customer id is invalid', async () => {
+      const res = await request(server).get('/api/customers/1');
+
+      expect(res.status).toBe(404);
+    });
+
+    it('Should return 404 if no genre with the given ID exists', async () => {
+      const id = mongoose.Types.ObjectId();
+      const res = await request(server).get(`/api/customers/${id}`);
+
+      expect(res.status).toBe(404);
     });
   });
 });
