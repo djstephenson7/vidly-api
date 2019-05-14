@@ -61,4 +61,15 @@ describe('/api/customers', () => {
       expect(res.status).toBe(404);
     });
   });
+
+  describe('POST/', () => {
+    it('Should save a new customer if params are valid', async () => {
+      const res = await request(server).post({
+        name: 'Customer1',
+        phone: '12345',
+      });
+
+      expect(res).not.toBeNull();
+    });
+  });
 });
