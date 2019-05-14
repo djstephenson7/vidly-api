@@ -196,4 +196,49 @@ describe('/api/customers', () => {
       expect(res.status).toBe(404);
     });
   });
+
+  describe('DELETE /:id', () => {
+    let customer;
+    let id;
+
+    const exec = async () => await request(server)
+      .delete(`/api/customers/${id}`)
+      .send();
+
+    beforeEach(async () => {
+      customer = new Customer({ name: 'Customer1', phone: '12345' });
+      await customer.save();
+
+      id = customer._id;
+    });
+
+    it('Should delete a customer if the ID is valid', async () => {
+      const res = await exec();
+      const deletedCustomer = await Customer.findById(id);
+
+      expect(res.status).toBe(200);
+      expect(deletedCustomer).toBeNull();
+    });
+
+    it('Should return the deleted customer', async () => {
+      const res = await exec();
+
+      expect(res.body).toHaveProperty('_id');
+      expect(res.body).toHaveProperty('phone', customer.phone);
+    });
+
+    it('Should return 404 if customer with the given ID is not found', async () => {
+      id = mongoose.Types.ObjectId();
+      const res = await exec();
+
+      expect(res.status).toBe(404);
+    });
+
+    it('Should return 404 if customer with the given ID is not found', async () => {
+      id = 1;
+      const res = await exec();
+
+      expect(res.status).toBe(404);
+    });
+  });
 });
