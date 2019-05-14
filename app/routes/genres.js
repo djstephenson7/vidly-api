@@ -1,9 +1,9 @@
 const express = require('express');
-const { Genre, validate } = require('../models/genreModel');
+const { Genre, validateGenre } = require('../models/genreModel');
 const validateObjectId = require('../middleware/validateObjectId');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
-
+const validate = require('../middleware/validate');
 
 const router = express();
 
@@ -20,19 +20,13 @@ router.get('/:id', validateObjectId, async (req, res) => {
   res.send(genre);
 });
 
-router.post('/', auth, async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
+router.post('/', [auth, validate(validateGenre)], async (req, res) => {
   let genre = new Genre({ genre: req.body.genre });
   genre = await genre.save();
   res.send(genre);
 });
 
-router.put('/:id', [auth, validateObjectId], async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
+router.put('/:id', [auth, validateObjectId, validate(validateGenre)], async (req, res) => {
   const genre = await Genre.findByIdAndUpdate(req.params.id, { genre: req.body.genre }, {
     new: true,
   });
