@@ -1,6 +1,3 @@
-// DELETE /:id happy path
-// 11. DELETE /:id return 404 if customer with the given ID not found.
-// 12. DELETE /:id Deletes customer successfully if ID valid
 const request = require('supertest');
 const mongoose = require('mongoose');
 const { Customer, validate } = require('../../models/customerModel');
