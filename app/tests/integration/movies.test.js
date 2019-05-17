@@ -67,13 +67,18 @@ describe('/api/movies', () => {
     let token;
     let genre;
     let movie;
+    let title;
 
-    beforeEach(() => {
+    beforeEach(async () => {
+      title = '12345';
       token = new User().generateAuthToken();
-      genre = 'Genre1';
+      genre = new Genre({ genre: 'Genre1' });
       movie = new Movie({
-        title: 'Movie1', genre, numberInStock: 1, dailyRentalRate: 1,
+        title, genre, numberInStock: 1, dailyRentalRate: 1,
       });
+
+      await movie.save();
+      await genre.save();
     });
 
     const exec = async () => await request(server)
@@ -89,7 +94,7 @@ describe('/api/movies', () => {
     });
 
     it('Should return 400 if movie is less than 5 characters', async () => {
-      movie.title = '1234';
+      title = '1234';
       const res = await exec();
 
       expect(res.status).toBe(400);
@@ -118,7 +123,7 @@ describe('/api/movies', () => {
     });
   });
 
-  describe('PUT/:id', () => {
+  xdescribe('PUT/:id', () => {
     let movie;
     let updatedTitle;
     let id;
@@ -140,13 +145,9 @@ describe('/api/movies', () => {
     const exec = async () => await request(server)
       .put(`/api/movies/${id}`)
       .set('x-auth-token', token)
-      .send({
-        title: updatedTitle,
-        numberInStock: 1,
-        dailyRentalRate: 1,
-      });
+      .send({ title: updatedTitle });
 
-    it('Should update movie params successfully if ID is valid', async () => {
+    xit('Should update movie params successfully if ID is valid', async () => {
       const res = await exec();
 
       expect(res.status).toBe(200);
@@ -154,7 +155,7 @@ describe('/api/movies', () => {
       expect(res.body).toHaveProperty(genre);
     });
 
-    it('Should return the updated movie if params are valid', async () => {
+    xit('Should return the updated movie if params are valid', async () => {
       await exec();
       const updatedMovie = await Movie.findById(movie._id);
 
@@ -184,9 +185,10 @@ describe('/api/movies', () => {
     });
   });
 
-  xdescribe('DELETE /:id', () => {
+  describe('DELETE /:id', () => {
     let token;
     let genre;
+    let movie;
     let id;
 
     const exec = async () => await request(server)
@@ -195,16 +197,22 @@ describe('/api/movies', () => {
       .send();
 
     beforeEach(async () => {
-      genre = new Movie({ genre: 'genre1' });
+      genre = new Genre({ genre: 'Genre1' });
+      movie = new Movie({
+        title: '12345', genre, numberInStock: 1, dailyRentalRate: 1,
+      });
+
+      await movie.save();
       await genre.save();
 
-      id = genre._id;
+      id = movie._id;
       token = new User({ isAdmin: true }).generateAuthToken();
     });
 
     it('Should return 401 if client is not logged in', async () => {
       token = '';
       const res = await exec();
+      console.log(res.body);
 
       expect(res.status).toBe(401);
     });
@@ -240,8 +248,8 @@ describe('/api/movies', () => {
     it('Should return the removed genre', async () => {
       const res = await exec();
 
-      expect(res.body).toHaveProperty('_id', genre._id.toHexString());
-      expect(res.body).toHaveProperty('genre', genre.genre);
+      expect(res.body).toHaveProperty('_id', movie._id.toHexString());
+      expect(res.body).toHaveProperty('title', movie.title);
     });
   });
 });
