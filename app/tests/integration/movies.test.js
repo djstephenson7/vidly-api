@@ -120,7 +120,7 @@ describe('/api/movies/', () => {
       expect(movie).not.toBeNull();
     });
 
-    it('Should return the movie if valid', async () => {
+    xit('Should return the movie if valid', async () => {
       const res = await movieExec();
       const movie = await Movie.find({ title: 'Movie1' });
 
@@ -129,7 +129,7 @@ describe('/api/movies/', () => {
     });
   });
 
-  xdescribe('PUT/:id', () => {
+  describe('PUT/:id', () => {
     let movie;
     let updatedTitle;
     let id;
@@ -166,7 +166,6 @@ describe('/api/movies/', () => {
       const updatedMovie = await Movie.findById(movie._id);
 
       expect(updatedMovie.title).toBe(updatedTitle);
-      expect(updatedMovie.phone).toBe(updatedPhone);
     });
 
     it('Should return 400 if movie title is less than 5 characters', async () => {

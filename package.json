@@ -5,11 +5,13 @@
   "main": "index.js",
   "dependencies": {
     "bcrypt": "^3.0.5",
+    "compression": "^1.7.4",
     "config": "^3.1.0",
     "eslint-plugin-jest": "^22.4.1",
     "express": "^4.16.4",
     "express-async-errors": "^3.1.1",
     "fawn": "^2.1.5",
+    "helmet": "^3.18.0",
     "joi": "^14.3.1",
     "joi-objectid": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
