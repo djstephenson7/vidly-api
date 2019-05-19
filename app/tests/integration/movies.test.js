@@ -6,7 +6,7 @@ const { Genre } = require('../../models/genreModel');
 
 let server;
 
-describe('/api/movies', () => {
+describe('/api/movies/', () => {
   beforeEach(() => { server = require('../../../index'); });
 
   afterEach(async () => {
@@ -35,7 +35,7 @@ describe('/api/movies', () => {
     });
   });
 
-  describe('GET/:id', () => {
+  describe('GET /:id', () => {
     it('Should return a movie if a valid ID is passed', async () => {
       const genre = new Genre({ genre: 'Genre1' });
       const movie = new Movie({
@@ -63,7 +63,7 @@ describe('/api/movies', () => {
     });
   });
 
-  xdescribe('POST/', () => {
+  describe('POST /', () => {
     let token;
     let genre;
     let movie;
@@ -77,45 +77,51 @@ describe('/api/movies', () => {
         title, genre, numberInStock: 1, dailyRentalRate: 1,
       });
 
-      await movie.save();
       await genre.save();
+      await movie.save();
+      await genreExec();
     });
 
-    const exec = async () => await request(server)
+    const genreExec = async () => await request(server)
+      .post('/api/genres/')
+      .set('x-auth-token', token)
+      .send({ genre });
+
+    const movieExec = async () => await request(server)
       .post('/api/movies/')
       .set('x-auth-token', token)
       .send({ movie });
 
     it('Should return 401 if client is not logged in', async () => {
       token = '';
-      const res = await exec();
+      const res = await movieExec();
 
       expect(res.status).toBe(401);
     });
 
     it('Should return 400 if movie is less than 5 characters', async () => {
       title = '1234';
-      const res = await exec();
+      const res = await movieExec();
 
       expect(res.status).toBe(400);
     });
 
     it('Should return 400 if movie is more than 50 characters', async () => {
       movie.title = new Array(52).join('a');
-      const res = await exec();
+      const res = await movieExec();
 
       expect(res.status).toBe(400);
     });
 
     it('Should save the movie if valid', async () => {
-      await exec();
+      const res = await movieExec();
       const movie = await Movie.find({ title: 'Movie1' });
 
       expect(movie).not.toBeNull();
     });
 
-    it('Should return the genre if valid', async () => {
-      const res = await exec();
+    it('Should return the movie if valid', async () => {
+      const res = await movieExec();
       const movie = await Movie.find({ title: 'Movie1' });
 
       expect(res.body).toHaveProperty('_id');
@@ -212,7 +218,6 @@ describe('/api/movies', () => {
     it('Should return 401 if client is not logged in', async () => {
       token = '';
       const res = await exec();
-      console.log(res.body);
 
       expect(res.status).toBe(401);
     });

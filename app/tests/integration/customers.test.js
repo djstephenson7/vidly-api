@@ -1,6 +1,6 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const { Customer, validate } = require('../../models/customerModel');
+const { Customer } = require('../../models/customerModel');
 const { User } = require('../../models/userModel');
 const token = require('../../middleware/auth');
 
