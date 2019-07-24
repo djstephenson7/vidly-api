@@ -6,7 +6,7 @@ const config = require("config");
 
 const data = [
   {
-    genre: "Comedy",
+    name: "Comedy",
     movies: [
       { title: "Airplane", numberInStock: 5, dailyRentalRate: 2 },
       { title: "The Hangover", numberInStock: 10, dailyRentalRate: 2 },
@@ -14,7 +14,7 @@ const data = [
     ]
   },
   {
-    genre: "Action",
+    name: "Action",
     movies: [
       { title: "Die Hard", numberInStock: 5, dailyRentalRate: 2 },
       { title: "Terminator", numberInStock: 10, dailyRentalRate: 2 },
@@ -22,7 +22,7 @@ const data = [
     ]
   },
   {
-    genre: "Romance",
+    name: "Romance",
     movies: [
       { title: "The Notebook", numberInStock: 5, dailyRentalRate: 2 },
       { title: "When Harry Met Sally", numberInStock: 10, dailyRentalRate: 2 },
@@ -30,7 +30,7 @@ const data = [
     ]
   },
   {
-    genre: "Thriller",
+    name: "Thriller",
     movies: [
       { title: "The Sixth Sense", numberInStock: 5, dailyRentalRate: 2 },
       { title: "Gone Girl", numberInStock: 10, dailyRentalRate: 2 },
@@ -46,10 +46,10 @@ async function seed() {
   await Genre.deleteMany({});
 
   for (let genre of data) {
-    const { _id: genreId } = await new Genre({ genre: genre.genre }).save();
+    const { _id: genreId } = await new Genre({ name: genre.name }).save();
     const movies = genre.movies.map(movie => ({
       ...movie,
-      genre: { _id: genreId, genre: genre.genre }
+      genre: { _id: genreId, name: genre.name }
     }));
     await Movie.insertMany(movies);
   }

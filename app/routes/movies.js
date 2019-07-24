@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
     title: req.body.title,
     genre: {
       _id: genre._id,
-      genre: genre.genre
+      name: genre.name
     },
     numberInStock: req.body.numberInStock,
     dailyRentalRate: req.body.dailyRentalRate
@@ -53,7 +53,7 @@ router.put("/:id", [auth, validateObjectId], async (req, res) => {
       title: req.body.title,
       genre: {
         _id: genre._id,
-        genre: genre.genre
+        name: genre.name
       },
       numberInStock: req.body.numberInStock,
       dailyRentalRate: req.body.dailyRentalRate
