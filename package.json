@@ -15,7 +15,7 @@
     "joi": "^14.3.1",
     "joi-objectid": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongoose": "^5.4.19",
     "winston": "2.0.0",
@@ -39,7 +39,7 @@
   },
   "scripts": {
     "test": "jest --watchAll --verbose --coverage --runInBand",
-    "start": "node index.js"
+    "start": "nodemon"
   },
   "engines": {
     "node": "11.10.1"
