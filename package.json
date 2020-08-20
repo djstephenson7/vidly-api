@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^5.0.0",
     "compression": "^1.7.4",
     "config": "^3.1.0",
     "eslint-plugin-jest": "^22.4.1",
